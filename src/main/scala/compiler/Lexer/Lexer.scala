@@ -6,6 +6,14 @@ object Lexer {
 
   def tokenize(string: String): List[TOKEN] = tokenize(string.toList)
 
+  val charTokens: Map[Char, TOKEN] = Map(
+    '=' -> EQUAL,
+    '+' -> PLUS,
+    '-' -> MINUS,
+    ';' -> SEMI,
+    ',' -> COMMA
+  )
+
   def tokenize(chars: List[Char]): List[TOKEN] = {
 
     def iter(tokens: List[TOKEN], chars: List[Char]): List[TOKEN] =
@@ -26,10 +34,9 @@ object Lexer {
     case c :: cs if c.isWhitespace => getToken(cs)
     case c :: cs if c.isLetter     => collectWord(c :: cs)
     case c :: cs if c.isDigit      => collectNumber(c :: cs)
-    case c :: cs if c == '='       => (EQUAL, cs)
-    case c :: cs if c == ';'       => (SEMI, cs)
-    case c :: cs if c == ','       => (COMMA, cs)
-    case c :: cs                   => (INVALID_TOKEN(c.toString), cs)
+    case c :: cs if charTokens contains c =>
+      (charTokens.getOrElse(c, INVALID_TOKEN(c.toString)), cs)
+    case c :: cs => (INVALID_TOKEN(c.toString), cs)
   }
 
   def collectWord(chars: List[Char]): (TOKEN, List[Char]) = {

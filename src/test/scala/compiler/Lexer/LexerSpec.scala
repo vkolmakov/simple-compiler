@@ -45,6 +45,18 @@ class LexerSpec extends WordSpec with Matchers {
         ID("y"),
         EOF)
     }
+
+    "recognize a simple algebraic expression `int x = 2 + 1;`" in {
+      Lexer.tokenize("int x = 2 + 1;") should contain theSameElementsInOrderAs Vector(
+        INT_TYPE,
+        ID("x"),
+        EQUAL,
+        NUMBER(2),
+        PLUS,
+        NUMBER(1),
+        SEMI,
+        EOF)
+    }
   }
 
   "getToken" should {
