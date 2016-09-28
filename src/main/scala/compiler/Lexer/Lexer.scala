@@ -18,21 +18,35 @@ object Lexer {
     case Nil => (EOF, Nil)
 
     case c :: cs if c.isWhitespace => getToken(cs)
-    case c :: cs if c.isLetter     => processWord(c :: cs)
+    case c :: cs if c.isLetter     => collectWord(c :: cs)
+    case c :: cs if c.isDigit      => collectNumber(c :: cs)
   }
 
-  def processWord(chars: List[Char]): (TOKEN, List[Char]) = {
+  def collectWord(chars: List[Char]): (TOKEN, List[Char]) = {
     def iter(acc: String, chars: List[Char]): (TOKEN, List[Char]) =
       chars match {
         case c :: cs if c.isLetterOrDigit || c == '_' => iter(acc + c, cs)
-        case cs                                       => (matchWord(acc), cs)
+        case cs                                       => (processWord(acc), cs)
       }
 
     iter("", chars)
   }
 
-  def matchWord(identifier: String): TOKEN = identifier match {
+  def processWord(word: String): TOKEN = word match {
     case id => ID(id)
   }
 
+  def collectNumber(chars: List[Char]): (TOKEN, List[Char]) = {
+    def iter(acc: String, chars: List[Char]): (TOKEN, List[Char]) =
+      chars match {
+        case c :: cs if c.isDigit => iter(acc + c, cs)
+        case cs                   => (processNumber(acc), cs)
+      }
+
+    iter("", chars)
+  }
+
+  def processNumber(number: String): TOKEN = number match {
+    case num => NUMBER(num.toInt)
+  }
 }

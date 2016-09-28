@@ -6,7 +6,9 @@ class LexerSpec extends WordSpec with Matchers {
 
   "Lexer" should {
     "be able to tokenize \"int x;\"" in {
-      Lexer.tokenize("int x;") should contain theSameElementsAs Vector(INT_TYPE, ID("x"), STATEMENT_TERM)
+      Lexer.tokenize("int x;") should contain theSameElementsAs Vector(INT_TYPE,
+                                                                       ID("x"),
+                                                                       STATEMENT_TERM)
     }
   }
 
@@ -20,21 +22,33 @@ class LexerSpec extends WordSpec with Matchers {
     }
   }
 
-  "processWord" should {
+  "collectWord" should {
     "be able to recognize an arbitrary string as a variable name" in {
-      Lexer.processWord("redFish;\n".toList) should be(ID("redFish"), ";\n".toList)
+      Lexer.collectWord("redFish;\n".toList) should be(ID("redFish"), ";\n".toList)
     }
 
     "allow underscores in variable names" in {
-      Lexer.processWord("DATE_FMT = \"%y%m%d\";\n".toList) should be(ID("DATE_FMT"), " = \"%y%m%d\";\n".toList)
+      Lexer.collectWord("DATE_FMT = \"%y%m%d\";\n".toList) should be(
+        ID("DATE_FMT"),
+        " = \"%y%m%d\";\n".toList)
     }
   }
 
-  "matchWord" should {
+  "processWord" should {
     "identify and arbitrary string as ID" in {
-      Lexer.matchWord("greenWhale") should be(ID("greenWhale"))
+      Lexer.processWord("greenWhale") should be(ID("greenWhale"))
     }
-
   }
 
+  "collectNumber" should {
+    "recognize an integer as NUMBER" in {
+      Lexer.collectNumber("1234;\n".toList) should be(NUMBER(1234), ";\n".toList)
+    }
+  }
+
+  "processNumber" should {
+    "recognize an integer as NUMBER" in {
+      Lexer.processNumber("565") should be(NUMBER(565))
+    }
+  }
 }
