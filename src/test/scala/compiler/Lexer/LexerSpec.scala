@@ -8,58 +8,47 @@ class LexerSpec extends WordSpec with Matchers {
 
   "Lexer" should {
     "tokenize declaration `int x;`" in {
-      Lexer.tokenize("int x;") should contain theSameElementsInOrderAs Vector(INT_TYPE,
-                                                                              ID("x"),
-                                                                              SEMI,
-                                                                              EOF)
+      val expected = Vector(INT_TYPE, ID("x"), SEMI, EOF)
+
+      Lexer.tokenize("int x;") should contain theSameElementsInOrderAs expected
     }
 
     "tokenize assignment `x = 0;`" in {
-      Lexer.tokenize("x = 0;".toList) should contain theSameElementsInOrderAs Vector(
-        ID("x"),
-        EQUAL,
-        NUMBER(0),
-        SEMI,
-        EOF)
+      val expected = Vector(ID("x"), EQUAL, NUMBER(0), SEMI, EOF)
+
+      Lexer.tokenize("x = 0;".toList) should contain theSameElementsInOrderAs expected
     }
 
     "tokenize declaration and assignment `int tokenCount = 100;`" in {
-      Lexer.tokenize("int tokenCount = 100;") should contain theSameElementsInOrderAs Vector(
-        INT_TYPE,
-        ID("tokenCount"),
-        EQUAL,
-        NUMBER(100),
-        SEMI,
-        EOF)
+      val expected = Vector(INT_TYPE, ID("tokenCount"), EQUAL, NUMBER(100), SEMI, EOF)
+
+      Lexer.tokenize("int tokenCount = 100;") should contain theSameElementsInOrderAs expected
     }
 
     "tokenize declaration and assignment with invalid tokens `int invalidCount = 123abcd2`" in {
-      Lexer.tokenize("int invalidVal = 123abcd2, x, y\n") should contain theSameElementsInOrderAs Vector(
-        INT_TYPE,
-        ID("invalidVal"),
-        EQUAL,
-        INVALID_TOKEN("123abcd2"),
-        COMMA,
-        ID("x"),
-        COMMA,
-        ID("y"),
-        EOF)
+      val expected = Vector(INT_TYPE,
+                            ID("invalidVal"),
+                            EQUAL,
+                            INVALID_TOKEN("123abcd2"),
+                            COMMA,
+                            ID("x"),
+                            COMMA,
+                            ID("y"),
+                            EOF)
+
+      Lexer.tokenize("int invalidVal = 123abcd2, x, y\n") should contain theSameElementsInOrderAs expected
     }
 
     "recognize a simple algebraic expression `int x = 2 + 1;`" in {
-      Lexer.tokenize("int x = 2 + 1;") should contain theSameElementsInOrderAs Vector(
-        INT_TYPE,
-        ID("x"),
-        EQUAL,
-        NUMBER(2),
-        PLUS,
-        NUMBER(1),
-        SEMI,
-        EOF)
+      val expected =
+        Vector(INT_TYPE, ID("x"), EQUAL, NUMBER(2), PLUS, NUMBER(1), SEMI, EOF)
+
+      Lexer.tokenize("int x = 2 + 1;") should contain theSameElementsInOrderAs expected
     }
     "be whitespace independent and tokenize `int sum=-22+1;`, ` int sum=-22 +1 ;` and `\\t\\tint\\nsum=  - 22+1\\n;" in {
       val expected =
         Vector(INT_TYPE, ID("sum"), EQUAL, MINUS, NUMBER(22), PLUS, NUMBER(1), SEMI, EOF)
+
       Lexer.tokenize("int sum=-22+1;") should contain theSameElementsInOrderAs expected
       Lexer.tokenize(" int sum=-22 +1 ;") should contain theSameElementsInOrderAs expected
       Lexer.tokenize("\t\tint\nsum=  - 22+1\n;") should contain theSameElementsInOrderAs expected
