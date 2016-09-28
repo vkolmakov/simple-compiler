@@ -7,19 +7,23 @@ object Lexer {
   def tokenize(chars: List[Char]): List[TOKEN] = {
     def iter(tokens: List[TOKEN], chars: List[Char]): List[TOKEN] =
       getToken(chars) match {
-        case (EOF, cs)   => (EOF :: tokens).reverse
+        case (EOF, Nil)  => (EOF :: tokens).reverse
         case (token, cs) => iter(token :: tokens, cs)
       }
 
-    Nil
+    iter(Nil, chars)
   }
 
   def getToken(chars: List[Char]): (TOKEN, List[Char]) = chars match {
-    case Nil => (EOF, Nil)
-
+    case Nil                       => (EOF, Nil)
     case c :: cs if c.isWhitespace => getToken(cs)
     case c :: cs if c.isLetter     => collectWord(c :: cs)
     case c :: cs if c.isDigit      => collectNumber(c :: cs)
+    case c :: cs if c == ';'       => (STATEMENT_TERM, cs)
+    case c :: cs => {
+      println(s"Illegal character $c")
+      getToken(cs)
+    }
   }
 
   def collectWord(chars: List[Char]): (TOKEN, List[Char]) = {
@@ -33,7 +37,8 @@ object Lexer {
   }
 
   def processWord(word: String): TOKEN = word match {
-    case id => ID(id)
+    case id if id == "int" => INT_TYPE
+    case id                => ID(id)
   }
 
   def collectNumber(chars: List[Char]): (TOKEN, List[Char]) = {

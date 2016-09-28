@@ -8,7 +8,8 @@ class LexerSpec extends WordSpec with Matchers {
     "be able to tokenize \"int x;\"" in {
       Lexer.tokenize("int x;") should contain theSameElementsAs Vector(INT_TYPE,
                                                                        ID("x"),
-                                                                       STATEMENT_TERM)
+                                                                       STATEMENT_TERM,
+                                                                       EOF)
     }
   }
 
@@ -19,6 +20,10 @@ class LexerSpec extends WordSpec with Matchers {
 
     "ignore whitespace" in {
       Lexer.getToken("     \t   \n  ".toList) should be(EOF, Nil)
+    }
+
+    "recognize ';' as statement delimiter" in {
+      Lexer.getToken(";\n".toList) should be(STATEMENT_TERM, "\n".toList)
     }
   }
 
@@ -37,6 +42,10 @@ class LexerSpec extends WordSpec with Matchers {
   "processWord" should {
     "identify and arbitrary string as ID" in {
       Lexer.processWord("greenWhale") should be(ID("greenWhale"))
+    }
+
+    "recognize \"int\" as INT_TYPE" in {
+      Lexer.processWord("int") should be(INT_TYPE)
     }
   }
 
