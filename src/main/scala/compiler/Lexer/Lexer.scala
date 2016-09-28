@@ -11,19 +11,26 @@ object Lexer {
     '+' -> PLUS,
     '-' -> MINUS,
     ';' -> SEMI,
-    ',' -> COMMA
+    ',' -> COMMA,
+    '(' -> L_PAREN,
+    ')' -> R_PAREN,
+    '{' -> L_CURLY,
+    '}' -> R_CURLY,
+    '[' -> L_BRACKET,
+    ']' -> R_BRACKET
+  )
+
+  val keywords: Map[String, TOKEN] = Map(
+    "int" -> INT_TYPE
   )
 
   def tokenize(chars: List[Char]): List[TOKEN] = {
 
     def iter(tokens: List[TOKEN], chars: List[Char]): List[TOKEN] =
       getToken(chars) match {
-        case (EOF, Nil) => (EOF :: tokens).reverse
-        case (INVALID_TOKEN(token), cs) => {
-          println(s"Invalid token $token")
-          iter(INVALID_TOKEN(token) :: tokens, cs)
-        }
-        case (token, cs) => iter(token :: tokens, cs)
+        case (EOF, Nil)                 => (EOF :: tokens).reverse
+        case (INVALID_TOKEN(token), cs) => iter(INVALID_TOKEN(token) :: tokens, cs)
+        case (token, cs)                => iter(token :: tokens, cs)
       }
 
     iter(Nil, chars)
@@ -51,8 +58,7 @@ object Lexer {
   }
 
   def processWord(word: String): TOKEN = word match {
-    case id if id == "int" => INT_TYPE
-    case id                => ID(id)
+    case id => keywords.getOrElse(id, ID(id))
   }
 
   def collectNumber(chars: List[Char]): (TOKEN, List[Char]) = {

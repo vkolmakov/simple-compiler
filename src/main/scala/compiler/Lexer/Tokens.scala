@@ -15,9 +15,11 @@ case object EQUAL extends TOKEN
 case object PLUS  extends TOKEN
 case object MINUS extends TOKEN
 
-case object L_PAREN extends TOKEN
-case object R_PAREN extends TOKEN
-case object L_CURLY extends TOKEN
-case object R_CURLY extends TOKEN
+case object L_PAREN   extends TOKEN
+case object R_PAREN   extends TOKEN
+case object L_CURLY   extends TOKEN
+case object R_CURLY   extends TOKEN
+case object L_BRACKET extends TOKEN
+case object R_BRACKET extends TOKEN
 
 case class INVALID_TOKEN(val token: String) extends TOKEN

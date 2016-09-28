@@ -73,6 +73,14 @@ class LexerSpec extends WordSpec with Matchers {
       Lexer.getToken(";\n".toList) should be(SEMI, "\n".toList)
       Lexer.getToken("=25".toList) should be(EQUAL, "25".toList)
       Lexer.getToken(", xyz".toList) should be(COMMA, " xyz".toList)
+      Lexer.getToken("- xyz".toList) should be(MINUS, " xyz".toList)
+      Lexer.getToken("+ xyz".toList) should be(PLUS, " xyz".toList)
+      Lexer.getToken("(xyz".toList) should be(L_PAREN, "xyz".toList)
+      Lexer.getToken(")xyz".toList) should be(R_PAREN, "xyz".toList)
+      Lexer.getToken("{xyz".toList) should be(L_CURLY, "xyz".toList)
+      Lexer.getToken("}xyz".toList) should be(R_CURLY, "xyz".toList)
+      Lexer.getToken("[xyz".toList) should be(L_BRACKET, "xyz".toList)
+      Lexer.getToken("]xyz".toList) should be(R_BRACKET, "xyz".toList)
     }
   }
 
