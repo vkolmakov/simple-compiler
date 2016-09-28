@@ -57,6 +57,14 @@ class LexerSpec extends WordSpec with Matchers {
         SEMI,
         EOF)
     }
+    "be whitespace independent and tokenize `int sum=-22+1;`, ` int sum=-22 +1 ;` and `\\t\\tint\\nsum=  - 22+1\\n;" in {
+      val expected =
+        Vector(INT_TYPE, ID("sum"), EQUAL, MINUS, NUMBER(22), PLUS, NUMBER(1), SEMI, EOF)
+      Lexer.tokenize("int sum=-22+1;") should contain theSameElementsInOrderAs expected
+      Lexer.tokenize(" int sum=-22 +1 ;") should contain theSameElementsInOrderAs expected
+      Lexer.tokenize("\t\tint\nsum=  - 22+1\n;") should contain theSameElementsInOrderAs expected
+    }
+
   }
 
   "getToken" should {
