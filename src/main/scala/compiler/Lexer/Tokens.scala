@@ -5,8 +5,9 @@ trait TOKEN
 case class ID(val id: String)     extends TOKEN
 case class NUMBER(val value: Int) extends TOKEN
 
-case object STATEMENT_TERM extends TOKEN
-case object EOF            extends TOKEN
+case object SEMI  extends TOKEN
+case object COMMA extends TOKEN
+case object EOF   extends TOKEN
 
 case object INT_TYPE extends TOKEN
 
@@ -18,3 +19,5 @@ case object L_PAREN extends TOKEN
 case object R_PAREN extends TOKEN
 case object L_CURLY extends TOKEN
 case object R_CURLY extends TOKEN
+
+case class INVALID_TOKEN(val token: String) extends TOKEN
