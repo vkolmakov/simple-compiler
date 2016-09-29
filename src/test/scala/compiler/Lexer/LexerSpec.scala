@@ -2,7 +2,7 @@ package compiler.Lexer
 
 import org.scalatest._
 
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 class LexerSpec extends WordSpec with Matchers {
 
@@ -103,7 +103,7 @@ class LexerSpec extends WordSpec with Matchers {
       Lexer.processWord("greenWhale") should be(ID("greenWhale"))
     }
 
-    "recognize `int` as INT_TYPE" in {
+    "recognize all keywords as INT_TYPE" in {
       Lexer.processWord("int") should be(INT_TYPE)
     }
   }
@@ -120,8 +120,14 @@ class LexerSpec extends WordSpec with Matchers {
   }
 
   "processNumber" should {
-    "recognize an integer as NUMBER" in {
+    "recognize a valid integer string as NUMBER" in {
       Lexer.processNumber("565") should be(Success(NUMBER(565)))
+    }
+
+    "fail on invalid integer string" in {
+      Lexer.processNumber("321abc") shouldBe a[Failure[_]]
+      Lexer.processNumber("321_abc") shouldBe a[Failure[_]]
+      Lexer.processNumber("12-3") shouldBe a[Failure[_]]
     }
 
   }
